@@ -7,8 +7,9 @@ import axios from "axios";
 
 // Base URL for all API calls
 // The "proxy" in package.json forwards /api → http://localhost:5000
+// Use the environment variable if available (for production/Render), otherwise fallback to '/api' (for local proxy)
 const API = axios.create({
-  baseURL: "/api",
+  baseURL: process.env.REACT_APP_API_URL || "/api",
 });
 
 // Fetch all transactions
