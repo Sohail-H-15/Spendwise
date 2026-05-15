@@ -58,18 +58,32 @@ const Navbar = ({ onLogout }) => {
             </div>
           </motion.div>
 
-          {/* Right side badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="flex items-center gap-2 badge-shimmer border border-cyan-500/20 px-3 py-1.5 rounded-full"
-          >
-            <HiSparkles className="text-cyan-400 text-sm" />
-            <span className="text-xs font-body font-medium text-cyan-300 tracking-wide">
-              MERN Stack
-            </span>
-          </motion.div>
+          {/* Right side controls */}
+          <div className="flex items-center gap-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 }}
+              className="hidden sm:flex items-center gap-2 badge-shimmer border border-cyan-500/20 px-3 py-1.5 rounded-full"
+            >
+              <HiSparkles className="text-cyan-400 text-sm" />
+              <span className="text-xs font-body font-medium text-cyan-300 tracking-wide">
+                MERN Stack
+              </span>
+            </motion.div>
+
+            {onLogout && (
+              <motion.button
+                onClick={onLogout}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-2 text-slate-400 hover:text-red-400 text-sm font-medium transition-colors"
+              >
+                <HiLogout className="text-lg" />
+                Logout
+              </motion.button>
+            )}
+          </div>
         </div>
       </div>
     </motion.nav>

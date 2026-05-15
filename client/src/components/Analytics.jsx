@@ -9,9 +9,7 @@ import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ReferenceLine,
 } from "recharts";
-import { MdBarChart, MdPieChart, MdDownload } from "react-icons/md";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { MdBarChart, MdPieChart } from "react-icons/md";
 
 // Color palette for pie chart slices
 const CHART_COLORS = [
@@ -83,43 +81,8 @@ const Analytics = ({ transactions }) => {
   // Sort months chronologically (last 6 months shown)
   const barData = Object.values(monthlyData).slice(-6);
 
-  const chartsRef = useRef(null);
-  const [isDownloading, setIsDownloading] = useState(false);
-
-  const downloadPDF = async () => {
-    if (!chartsRef.current) return;
-    setIsDownloading(true);
-    try {
-      const canvas = await html2canvas(chartsRef.current, { scale: 2, backgroundColor: "#0F172A" });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
-      pdf.addImage(imgData, "PNG", 0, 10, pdfWidth, pdfHeight);
-      pdf.save("spendwise-analytics.pdf");
-    } catch (err) {
-      console.error("Failed to generate PDF", err);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-        <button
-          onClick={downloadPDF}
-          disabled={isDownloading}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-body border border-slate-700 transition"
-        >
-          <MdDownload className="text-lg" />
-          {isDownloading ? "Generating PDF..." : "Download PDF"}
-        </button>
-      </div>
-
-      <div ref={chartsRef} className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 p-4 -m-4 rounded-xl" style={{ backgroundColor: "#0F172A" }}>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
 
       {/* Expense Breakdown Pie Chart */}
       <motion.div
@@ -265,7 +228,6 @@ const Analytics = ({ transactions }) => {
           </div>
         </div>
       </motion.div>
-      </div>
     </div>
   );
 };

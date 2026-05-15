@@ -3,9 +3,12 @@
 //  Root component that manages all state
 // =============================================
 
-import React, { useState, useEffect, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { HiDownload } from "react-icons/hi";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import SummaryCards from "./components/SummaryCards";
@@ -61,6 +64,30 @@ function App() {
     setIsAuthenticated(false);
   };
 
+  const dashboardRef = useRef(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const downloadFullPDF = async () => {
+    if (!dashboardRef.current) return;
+    setIsDownloading(true);
+    try {
+      // Temporarily hide elements that shouldn't be in the PDF if needed (like the download button)
+      const canvas = await html2canvas(dashboardRef.current, { scale: 2, backgroundColor: "#0F172A", useCORS: true });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "PNG", 0, 10, pdfWidth, pdfHeight);
+      pdf.save("spendwise-full-report.pdf");
+    } catch (err) {
+      console.error("Failed to generate PDF", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const Dashboard = () => (
     <div
       className="min-h-screen bg-grid"
@@ -70,8 +97,18 @@ function App() {
       <Navbar onLogout={handleLogout} />
 
       {/* Main Content - padded for navbar */}
-      <main className="pt-16">
+      <main className="pt-16" ref={dashboardRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          <div className="flex justify-end mt-4 mb-2">
+            <button
+              onClick={downloadFullPDF}
+              disabled={isDownloading}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-body border border-slate-700 transition shadow-lg"
+            >
+              <HiDownload className="text-lg" />
+              {isDownloading ? "Generating PDF..." : "Download Full Report"}
+            </button>
+          </div>
 
           {/* ── Hero: Big Balance Number ── */}
           <HeroSection transactions={transactions} />
