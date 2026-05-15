@@ -5,9 +5,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { RiWalletLine } from "react-icons/ri";
-import { HiSparkles } from "react-icons/hi2";
+import { HiSparkles, HiLogout } from "react-icons/hi";
 
-const Navbar = () => {
+const Navbar = ({ onLogout }) => {
   const [scrolled, setScrolled] = useState(false);
 
   // Add background blur when user scrolls down

@@ -16,10 +16,12 @@ app.use(express.json()); // Parse incoming JSON bodies
 
 // ---- Import Routes ----
 const transactionRoutes = require("./routes/transactions");
+const authRoutes = require("./routes/auth");
 
 // ---- Use Routes ----
 // All transaction API routes are prefixed with /api/transactions
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/auth", authRoutes);
 
 // ---- Root Route (health check) ----
 app.get("/", (req, res) => {
